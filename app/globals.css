@@ -1,26 +1,176 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ---------- Dark Variant ---------- */
+@custom-variant dark (&:is(.dark *));
 
+/* ---------- Theme Tokens ---------- */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ---------- Base Reset ---------- */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  background: linear-gradient(
+    180deg,
+    oklch(0.08 0 0),
+    oklch(0.02 0 0)
+  );
+  color: oklch(0.98 0 0);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ---------- TYPOGRAPHY ---------- */
+
+h1 {
+  font-size: clamp(2.8rem, 6vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  background: linear-gradient(
+    90deg,
+    oklch(0.9 0.15 270),
+    oklch(0.85 0.22 330),
+    oklch(0.9 0.15 20)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+h2 {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 600;
+  color: oklch(0.9 0 0);
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: oklch(0.75 0 0);
+  max-width: 68ch;
+}
+
+span {
+  background: linear-gradient(
+    90deg,
+    oklch(0.8 0.18 260),
+    oklch(0.9 0.22 330)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+br {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+/* ---------- LINKS ---------- */
+
+a {
+  color: oklch(0.8 0.18 260);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+a:hover {
+  color: oklch(0.9 0.22 330);
+}
+
+/* ---------- INPUTS (GLASS STYLE) ---------- */
+
+input,
+textarea {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-md);
+  background: oklch(0.15 0 0 / 60%);
+  border: 1px solid oklch(1 0 0 / 8%);
+  color: oklch(0.98 0 0);
+  outline: none;
+  backdrop-filter: blur(10px);
+  transition: all 0.25s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: oklch(0.6 0 0);
+}
+
+input:focus,
+textarea:focus {
+  border-color: oklch(0.8 0.18 260);
+  box-shadow: 0 0 0 1px oklch(0.8 0.18 260 / 40%);
+}
+
+/* ---------- BUTTONS ---------- */
+
+button {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    135deg,
+    oklch(0.75 0.18 260),
+    oklch(0.85 0.22 330)
+  );
+  color: white;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 30px oklch(0.8 0.22 330 / 25%);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* ---------- CONTAINERS ---------- */
+
+section {
+  padding: clamp(2rem, 5vw, 4rem);
+}
+
+.card {
+  background: oklch(0.12 0 0 / 60%);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  backdrop-filter: blur(14px);
+  border: 1px solid oklch(1 0 0 / 8%);
+}
+
+/* ---------- SCROLLBAR ---------- */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(0.3 0 0);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
 }
