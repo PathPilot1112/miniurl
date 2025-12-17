@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { unique } from "next/dist/build/utils";
+
 
 const minischema = new mongoose.Schema(
     {
@@ -21,4 +21,4 @@ const minischema = new mongoose.Schema(
     }
 )
 
-export const miniModel = mongoose.model('miniurl',minischema)
+export default mongoose.model('miniurl',minischema)
