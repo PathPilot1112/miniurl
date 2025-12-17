@@ -1,36 +1,202 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+A scalable, production-ready URL shortener built with Next.js App Router, MongoDB, and Redis, designed using real-world system design principles such as caching, rate limiting, and secure redirection.
 
-## Getting Started
+Inspired by TinyURL & Bitly — built for learning system design + backend architecture.
 
-First, run the development server:
+🚀 Features
 
-```bash
+🔗 Generate short URLs instantly
+
+⚡ Ultra-fast redirects using Redis caching
+
+🛡 IP-based rate limiting (anti-spam)
+
+🔐 Secure URL validation & sanitization
+
+📈 Designed for high traffic (20k+ users)
+
+🧠 Clean architecture with separation of concerns
+
+🌐 SEO-friendly 302 redirects
+
+🧠 System Design Highlights
+
+Stateless APIs for scalability
+
+Redis for caching & rate limiting
+
+MongoDB as the source of truth
+
+HTTP 302 redirects for flexibility
+
+App Router (Next.js) for modern routing
+
+Production-ready folder structure
+
+🛠 Tech Stack
+Layer	Technology
+Frontend	Next.js (App Router)
+Backend	Next.js API Routes
+Database	MongoDB (Mongoose)
+Cache & Rate Limit	Redis (Upstash)
+Security	Input validation, CORS
+Deployment	Vercel
+📂 Folder Structure
+src/
+ ├── app/
+ │   ├── page.tsx
+ │   ├── api/
+ │   │    └── shorten/
+ │   │         └── route.ts
+ │   └── [code]/
+ │        └── route.ts
+ ├── lib/
+ │   ├── db.ts
+ │   ├── redis.ts
+ │   └── generateCode.ts
+ ├── models/
+ │   └── Url.ts
+
+🔌 API Endpoints
+1️⃣ Create Short URL
+POST /api/shorten
+
+
+Request Body
+
+{
+  "url": "https://example.com"
+}
+
+
+Response
+
+{
+  "shortUrl": "https://x.ly/abc123"
+}
+
+2️⃣ Redirect to Original URL
+GET /abc123
+
+
+➡️ Redirects using HTTP 302 to the original URL
+
+🔑 Short Code Generation
+
+Short URLs are generated using cryptographically secure random bytes:
+
+crypto.randomBytes(4).toString("hex")
+
+
+Low collision probability
+
+URL-safe
+
+Fast & scalable
+
+🧠 Redis Usage
+🔹 Rate Limiting
+
+Max 10 requests / IP / minute
+
+Prevents spam & abuse
+
+rate:IP → request count (TTL: 60s)
+
+🔹 Caching
+
+Shortcode → Original URL
+
+Reduces MongoDB load
+
+Improves redirect latency
+
+🔐 Security Measures
+
+✅ URL format validation
+
+✅ Block javascript: URLs
+
+✅ Request size limits
+
+✅ Input sanitization
+
+✅ CORS restrictions
+
+✅ Rate limiting (Redis)
+
+⚙️ Environment Variables
+
+Create a .env.local file:
+
+MONGO_URI=your_mongodb_connection_string
+REDIS_URL=your_upstash_redis_url
+BASE_URL=http://localhost:3000
+
+▶️ Running Locally
+git clone https://github.com/yourusername/xly-url-shortener
+cd xly-url-shortener
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Open:
+👉 http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+🌍 Deployment
 
-## Learn More
+Frontend & API: Vercel
 
-To learn more about Next.js, take a look at the following resources:
+Redis: Upstash (Free Tier)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+MongoDB: Atlas
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Designed to scale horizontally with zero downtime.
 
-## Deploy on Vercel
+📈 Scalability Notes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Redis caching reduces DB reads
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Stateless APIs allow easy horizontal scaling
+
+Short code indexing improves lookup time
+
+Rate limiting protects infra under load
+
+🎯 Learning Outcomes
+
+System design fundamentals
+
+Redis caching & rate limiting
+
+Secure API development
+
+Next.js App Router architecture
+
+Production-grade folder structure
+
+Real-world backend optimization
+
+📌 Future Enhancements
+
+📊 Admin analytics dashboard
+
+🔐 User authentication
+
+🔁 Custom aliases
+
+⏳ URL expiry
+
+🌍 Geo-analytics
+
+📉 Click tracking
+
+🧑‍💻 Author
+
+Mahik Jain
+Full-Stack Developer | System Design Learner
+
+Built as a hands-on system design project to understand how real-world scalable services work.
+
+⭐ If You Like This Project
+
+Give it a ⭐ on GitHub — it helps others discover it!
