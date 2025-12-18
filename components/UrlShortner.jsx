@@ -23,7 +23,7 @@ export default function UrlShortener() {
    
 
     try {
-      const res = await fetch('https://miniurl-2maq.onrender.comapi/shorten', {
+      const res = await fetch('https://miniurl-2maq.onrender.com/api/shorten', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
