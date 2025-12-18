@@ -7,6 +7,7 @@ import connectDB from "./lib/db.js";
 import miniModel from "./lib/schema.js";
 import { Ratelimiter } from "./lib/ratelimiter.js";
 import redis from "./lib/redis.js";
+import { generateQRCode } from "./lib/qrcode.js";
 
 dotenv.config();
 
@@ -70,15 +71,20 @@ app.post("/api/shorten", async (req, res) => {
     // 3️⃣ Generate short code
     const code = crypto.randomBytes(4).toString("hex");
 
+    const  tinyurl=`${process.env.BASE_URL}/${code}`
+    const qrCode = await generateQRCode(tinyurl)
+
     // 4️⃣ Save to DB
     await miniModel.create({
       shortcode: code,
       originalurl: url,
+      qrCode
     });
 
     // 5️⃣ Response
     return res.status(201).json({
       shortUrl: `${process.env.BASE_URL}/${code}`,
+      qrCode:qrCode
     });
   } catch (error) {
     console.error("SHORTEN ERROR:", error);
@@ -94,33 +100,66 @@ app.get("/:code", async (req, res) => {
   try {
     const { code } = req.params;
 
-    // 1️⃣ Increment clicks
-    await redis.incr(`clicks:${code}`);
-
-    // 2️⃣ Redis cache
-    const cachedURL = await redis.get(code);
+    // 1️⃣ Try Redis cache FIRST
+    const cachedURL = await redis.get(`url:${code}`);
     if (cachedURL) {
+      // increment clicks (non-blocking)
+      redis.incr(`clicks:${code}`);
+      miniModel.updateOne(
+        { shortcode: code },
+        { $inc: { clicks: 1 } }
+      ).exec();
+
       return res.redirect(302, cachedURL);
+      
     }
 
-    // 3️⃣ MongoDB fallback
+    // 2️⃣ MongoDB fallback
     const urlDoc = await miniModel.findOne({ shortcode: code });
     if (!urlDoc) {
       return res.status(404).send("Short URL not found");
     }
 
-    // 4️⃣ Cache it
-    await redis.set(code, urlDoc.originalurl, {
-      EX: 3600,
-    });
+    // 3️⃣ Cache URL
+    await redis.set(`url:${code}`, urlDoc.originalurl, { EX: 3600 });
+
+    // 4️⃣ Increment clicks
+    redis.incr(`clicks:${code}`);
+    await miniModel.updateOne(
+      { shortcode: code },
+      { $inc: { clicks: 1 } }
+    );
+
+    
+
+
 
     // 5️⃣ Redirect
     return res.redirect(302, urlDoc.originalurl);
+
+    return res.status(201).send({clicks})
+
   } catch (error) {
     console.error("REDIRECT ERROR:", error);
     return res.status(500).json({ message: "Server error" });
   }
 });
+
+app.get("/api/stats/:code", async (req, res) => {
+  const { code } = req.params;
+
+  const doc = await miniModel.findOne({ shortcode: code });
+  if (!doc) {
+    return res.status(404).json({ message: "Not found" });
+  }
+
+  res.json({
+    shortCode: code,
+    originalUrl: doc.originalurl,
+    clicks: doc.clicks,
+  });
+});
+
 
 /* =======================
    START SERVER

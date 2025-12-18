@@ -12,8 +12,13 @@ const minischema = new mongoose.Schema(
 
         },
         clicks:{
-            type:Number
-        }
+            type:Number,
+            default:0
+        },
+        qrCode:{
+            type:String
+        },
+       
 
     },
     {
